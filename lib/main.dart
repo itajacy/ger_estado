@@ -1,7 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  //! o runZonedGuarded é usado para capturar erros que ocorrem dentro do aplicativo, de forma global.
+  //! Isso é útil para registrar erros, enviar relatórios de falhas ou exibir mensagens de erro personalizadas.
+  runZonedGuarded(
+    () {
+      runApp(const MyApp());
+    },
+    (error, stackTrace) {
+      // Handle the error here
+      print('Erro: $error');
+      print('Stack trace: $stackTrace');
+    },
+  );
 }
 
 class MyApp extends StatelessWidget {
