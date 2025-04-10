@@ -43,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //representação da regra de negócio
   // var height = 0.0;
   // var weight = 0.0;
-  var person = Person(height: 0.0, weight: 0.0); // instância da classe Person
+  var person = Person(); // instância da classe Person
 
   //representação do estado
 
@@ -56,7 +56,6 @@ class _MyHomePageState extends State<MyHomePage> {
       result = 'IMC: ${imc.toStringAsFixed(2)}';
     });
   }
-   
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 final height = double.tryParse(value) ?? 0.0;
-                person = person.copyWith(
-                  height: height,
-                ); // Atualiza a altura na instância de Person
+                // Atualiza a altura na instância de Person
+                person.height = height;
               },
             ),
             TextField(
@@ -87,9 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 final weight = double.tryParse(value) ?? 0.0;
-                person = person.copyWith(
-                  weight: weight,
-                ); // Atualiza o peso na instância de Person
+                // Atualiza o peso na instância de Person
+                person.weight = weight;
               },
             ),
             ElevatedButton(
