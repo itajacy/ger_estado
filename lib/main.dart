@@ -40,15 +40,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //representação da regra de negócio
-  // var height = 0.0;
-  // var weight = 0.0;
-  var person = Person(); // instância da classe Person
+  //representação da regra de negócio Corporativa
+
+  var person = Person(); 
 
   //representação do estado
 
   var result = '';
 
+  
+  // açao da mudança do estado
   void calcularIMC() {
     // Chama o método calcularIMC da instância de Person
     final imc = person.calcularIMC();
