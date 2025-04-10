@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:ger_estado/models/person.dart';
 
+27:46 aula do dia 30/03 - viewmodel
+
 void main() {
   runZonedGuarded(
     () {
@@ -48,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   var result = '';
 
-  
+
   // açao da mudança do estado
   void calcularIMC() {
     // Chama o método calcularIMC da instância de Person
