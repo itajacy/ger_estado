@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:ger_estado/models/person.dart';
 
 void main() {
   runZonedGuarded(
@@ -40,26 +41,22 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   //representação da regra de negócio
-  var height = 0.0;
-  var weight = 0.0;
+  // var height = 0.0;
+  // var weight = 0.0;
+  var person = Person(height: 0.0, weight: 0.0); // instância da classe Person
 
   //representação do estado
 
   var result = '';
 
-  // representação da ação / regra de negócio da aplicação
   void calcularIMC() {
-    if (height > 0) {
-      final imc = weight / (height * height);
-      setState(() {
-        result = 'IMC: ${imc.toStringAsFixed(2)}';
-      });
-    } else {
-      setState(() {
-        result = 'A altura não pode ser zero!';
-      });
-    }
+    // Chama o método calcularIMC da instância de Person
+    final imc = person.calcularIMC();
+    setState(() {
+      result = 'IMC: ${imc.toStringAsFixed(2)}';
+    });
   }
+   
 
   @override
   Widget build(BuildContext context) {
@@ -79,14 +76,20 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: const InputDecoration(labelText: 'Height (m)'),
               keyboardType: TextInputType.number,
               onChanged: (value) {
-                height = double.tryParse(value) ?? 0.0;
+                final height = double.tryParse(value) ?? 0.0;
+                person = person.copyWith(
+                  height: height,
+                ); // Atualiza a altura na instância de Person
               },
             ),
             TextField(
               decoration: const InputDecoration(labelText: 'Weight (kg)'),
               keyboardType: TextInputType.number,
               onChanged: (value) {
-                weight = double.tryParse(value) ?? 0.0;
+                final weight = double.tryParse(value) ?? 0.0;
+                person = person.copyWith(
+                  weight: weight,
+                ); // Atualiza o peso na instância de Person
               },
             ),
             ElevatedButton(
