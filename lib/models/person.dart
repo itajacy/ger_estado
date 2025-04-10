@@ -14,5 +14,13 @@ class Person {
     return weight / (height * height);
   }
 
+  void setHeight(String value) {
+    height = double.tryParse(value) ?? 0.0;
+  }
+
+  void setWeight(String value) {
+    weight = double.tryParse(value) ?? 0.0;
+  }
+
   
 }

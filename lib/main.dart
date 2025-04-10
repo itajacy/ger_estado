@@ -74,20 +74,12 @@ class _MyHomePageState extends State<MyHomePage> {
             TextField(
               decoration: const InputDecoration(labelText: 'Height (m)'),
               keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final height = double.tryParse(value) ?? 0.0;
-                // Atualiza a altura na instância de Person
-                person.height = height;
-              },
+              onChanged: person.setHeight,
             ),
             TextField(
               decoration: const InputDecoration(labelText: 'Weight (kg)'),
               keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final weight = double.tryParse(value) ?? 0.0;
-                // Atualiza o peso na instância de Person
-                person.weight = weight;
-              },
+              onChanged: person.setWeight,
             ),
             ElevatedButton(
               onPressed: calcularIMC,
