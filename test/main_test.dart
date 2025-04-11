@@ -8,40 +8,50 @@ class Product {
 
 // state pattern
 // GERENCIAMENTO DE ESTADO FEITO PELA CLASSE
+// com valuenotifier as propriedades devem ser imutáveis usar final
 class ProductState {
-  List<Product> products = [];
-  bool isLoading = false;
-  String? errorMessage = null;
+  final List<Product> products;
+  final bool isLoading;
+  final String? errorMessage;
+
+  ProductState({
+    this.products = const [],
+    this.isLoading = false,
+    this.errorMessage,
+  });
+
   bool get isError => errorMessage != null;
 
-  void setLoading(bool loading) {
-    isLoading = loading;
+  ProductState setLoading(bool loading) {
+    return ProductState(
+      products: products,
+      isLoading: loading,
+      errorMessage: null,
+    );
   }
 
-  void setError(String message) {
-    errorMessage = message;
-    isLoading = false;
+  ProductState setError(String message) {
+    return ProductState(products: [], isLoading: false, errorMessage: message);
   }
 
-  void setProducts(List<Product> newProducts) {
-    products = newProducts;
-    isLoading = false;
+  ProductState setProducts(List<Product> newProducts) {
+    return ProductState(
+      products: newProducts,
+      isLoading: false,
+      errorMessage: null,
+    );
   }
 }
 
 // PROPAGAÇÃO DO ESTADO
-// FEITO PELO CHANGENOTIFIER
-class ProductViewModel extends ChangeNotifier {
-  var _state = ProductState();
-  ProductState get state => _state;
+//  Imutabilidade com gerenciamento de estado
+class ProductViewModel extends ValueNotifier<ProductState> {
+  ProductViewModel() : super(ProductState());
 
   Future<void> fetchProducts({required bool isError}) async {
-    // altera para está carregando e notifica os ouvintes
-
     // Reset state
-    _state = ProductState();
-    _state.setLoading(true);
-    notifyListeners();
+
+    value = value.setLoading(true);
 
     // antes de entrar aqui abaixo que vai demorar para exibir a tela
     // simulando uma demora de 2 segundos
@@ -49,18 +59,17 @@ class ProductViewModel extends ChangeNotifier {
 
     // tratativa  em caso de erro
     if (isError) {
-      _state.setError('Error fetching products');
-      notifyListeners();
+      value = value.setError('Error fetching products');
+
       return;
     }
 
     // tratativa  em caso de sucesso
-    _state.setProducts([
+    value = value.setProducts([
       Product('Product 1', 10.0),
       Product('Product 2', 20.0),
       Product('Product 3', 30.0),
     ]);
-    notifyListeners();
   }
 }
 
@@ -72,7 +81,7 @@ void main() async {
   ProductViewModel productViewModel = ProductViewModel();
 
   productViewModel.addListener(() {
-    final state = productViewModel.state;
+    final state = productViewModel.value;
     if (state.isLoading) {
       print('Objects Loading....');
     } else if (state.isError) {
