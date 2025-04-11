@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:ger_estado/models/person.dart';
-
-27:46 aula do dia 30/03 - viewmodel
+import 'package:ger_estado/viewmodel/person_viewmodel.dart';
 
 void main() {
   runZonedGuarded(
@@ -44,21 +43,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   //representação da regra de negócio Corporativa
 
-  var person = Person(); 
+  var person = Person();
 
-  //representação do estado
-
-  var result = '';
-
-
-  // açao da mudança do estado
-  void calcularIMC() {
-    // Chama o método calcularIMC da instância de Person
-    final imc = person.calcularIMC();
-    setState(() {
-      result = 'IMC: ${imc.toStringAsFixed(2)}';
-    });
-  }
+  final viewModel = PersonViewmodel();
 
   @override
   Widget build(BuildContext context) {
@@ -85,10 +72,16 @@ class _MyHomePageState extends State<MyHomePage> {
               onChanged: person.setWeight,
             ),
             ElevatedButton(
-              onPressed: calcularIMC,
+              onPressed: () => viewModel.calcularIMC(person),
               child: const Text('Calculate IMC'),
             ),
-            Text(result),
+            ListenableBuilder(
+              // adiciona e remove no dispose automaticamente
+              listenable: viewModel,
+              builder: (context, child) {
+                return Text(viewModel.result);
+              },
+            ),
           ],
         ),
       ),
