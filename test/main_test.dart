@@ -48,10 +48,13 @@ class ProductState {
 class ProductViewModel extends ValueNotifier<ProductState> {
   ProductViewModel() : super(ProductState());
 
+  void emit(ProductState state) {
+    value = state;
+  }
+
   Future<void> fetchProducts({required bool isError}) async {
     // Reset state
-
-    value = value.setLoading(true);
+    emit(value.setLoading(true));
 
     // antes de entrar aqui abaixo que vai demorar para exibir a tela
     // simulando uma demora de 2 segundos
@@ -59,17 +62,19 @@ class ProductViewModel extends ValueNotifier<ProductState> {
 
     // tratativa  em caso de erro
     if (isError) {
-      value = value.setError('Error fetching products');
+      emit(value.setError('Error fetching products'));
 
       return;
     }
 
     // tratativa  em caso de sucesso
-    value = value.setProducts([
-      Product('Product 1', 10.0),
-      Product('Product 2', 20.0),
-      Product('Product 3', 30.0),
-    ]);
+    emit(
+      value.setProducts([
+        Product('Product 1', 10.0),
+        Product('Product 2', 20.0),
+        Product('Product 3', 30.0),
+      ]),
+    );
   }
 }
 
