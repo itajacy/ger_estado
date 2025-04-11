@@ -5,6 +5,7 @@ import 'package:ger_estado/models/person.dart';
 import 'package:ger_estado/viewmodel/person_viewmodel.dart';
 
 void main() {
+  // tratamento de erro global com runZoneGuarded.
   runZonedGuarded(
     () {
       runApp(const MyApp());
