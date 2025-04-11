@@ -9,44 +9,41 @@ class Product {
 // state pattern
 // GERENCIAMENTO DE ESTADO FEITO PELA CLASSE
 // com valuenotifier as propriedades devem ser imutáveis usar final
-class ProductState {
-  final List<Product> products;
-  final bool isLoading;
-  final String? errorMessage;
-
-  ProductState({
-    this.products = const [],
-    this.isLoading = false,
-    this.errorMessage,
-  });
-
-  bool get isError => errorMessage != null;
-
+sealed class ProductState {
   ProductState setLoading(bool loading) {
-    return ProductState(
-      products: products,
-      isLoading: loading,
-      errorMessage: null,
-    );
+    return LoadingProductState();
   }
 
   ProductState setError(String message) {
-    return ProductState(products: [], isLoading: false, errorMessage: message);
+    return ErrorProductState(message);
   }
 
   ProductState setProducts(List<Product> newProducts) {
-    return ProductState(
-      products: newProducts,
-      isLoading: false,
-      errorMessage: null,
-    );
+    return LoadedProductState(newProducts);
   }
+}
+
+class InitialProductState extends ProductState {}
+
+class LoadingProductState extends ProductState {}
+
+class ErrorProductState extends ProductState {
+  final String errorMessage;
+  ErrorProductState(this.errorMessage);
+}
+
+class LoadedProductState extends ProductState {
+  final List<Product> products;
+
+  LoadedProductState(this.products);
 }
 
 // PROPAGAÇÃO DO ESTADO
 //  Imutabilidade com gerenciamento de estado
 class ProductViewModel extends Cubit<ProductState> {
-  ProductViewModel() : super(ProductState());
+  ProductViewModel() : super(InitialProductState());
+
+  // ProductViewModel() : super(ProductState());
 
   Future<void> fetchProducts({required bool isError}) async {
     // Reset state
@@ -99,11 +96,13 @@ void main() async {
 
   productViewModel.stream.listen((state) {
     // final state = productViewModel.state;
-    if (state.isLoading) {
-      print('Objects Loading....');
-    } else if (state.isError) {
+    if (state is InitialProductState) {
+      print('Initial state....');
+    } else if (state is LoadingProductState) {
+      print(' objects loading...}');
+    } else if (state is ErrorProductState) {
       print('Error: ${state.errorMessage}');
-    } else {
+    } else if (state is LoadedProductState) {
       print('Product length: ${state.products.length}');
     }
   });
