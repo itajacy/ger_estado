@@ -9,14 +9,24 @@ class Product {
 class ProductViewModel extends ChangeNotifier {
   List<Product> products = [];
   bool isLoading = false;
+  String? errorMessage = null;
+  bool get isError => errorMessage != null;
 
-  Future<void> fetchProducts() async {
+  Future<void> fetchProducts({required bool isError}) async {
     // altera para está carregando e notifica os ouvintes
     isLoading = true;
+    errorMessage = null;
     notifyListeners();
 
     // antes de entrar aqui abaixo que vai demorar para exibir a tela
     await Future.delayed(const Duration(seconds: 2));
+
+    if (isError) {
+      isLoading = false;
+      errorMessage = 'Error fetching products';
+      notifyListeners();
+      return;
+    }
     products = [
       Product('Product 1', 10.0),
       Product('Product 2', 20.0),
@@ -37,9 +47,12 @@ void main() async {
   productViewModel.addListener(() {
     if (productViewModel.isLoading) {
       print('Objects Loading....');
+    } else if (productViewModel.isError) {
+      print('Error: ${productViewModel.errorMessage}');
     } else {
       print('Product length: ${productViewModel.products.length}');
     }
   });
-  await productViewModel.fetchProducts();
+  //testando com isError =  false e true
+  await productViewModel.fetchProducts(isError: true);
 }
