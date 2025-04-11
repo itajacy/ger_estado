@@ -6,19 +6,41 @@ class Product {
   Product(this.name, this.price);
 }
 
-class ProductViewModel extends ChangeNotifier {
+// state pattern
+// GERENCIAMENTO DE ESTADO FEITO PELA CLASSE
+class ProductState {
   List<Product> products = [];
   bool isLoading = false;
   String? errorMessage = null;
   bool get isError => errorMessage != null;
 
+  void setLoading(bool loading) {
+    isLoading = loading;
+  }
+
+  void setError(String message) {
+    errorMessage = message;
+    isLoading = false;
+  }
+
+  void setProducts(List<Product> newProducts) {
+    products = newProducts;
+    isLoading = false;
+  }
+}
+
+// PROPAGAÇÃO DO ESTADO
+// FEITO PELO CHANGENOTIFIER
+class ProductViewModel extends ChangeNotifier {
+  var _state = ProductState();
+  ProductState get state => _state;
+
   Future<void> fetchProducts({required bool isError}) async {
     // altera para está carregando e notifica os ouvintes
 
     // Reset state
-    isLoading = true;
-    errorMessage = null;
-    products = [];
+    _state = ProductState();
+    _state.setLoading(true);
     notifyListeners();
 
     // antes de entrar aqui abaixo que vai demorar para exibir a tela
@@ -27,20 +49,17 @@ class ProductViewModel extends ChangeNotifier {
 
     // tratativa  em caso de erro
     if (isError) {
-      isLoading = false;
-      errorMessage = 'Error fetching products';
+      _state.setError('Error fetching products');
       notifyListeners();
       return;
     }
 
     // tratativa  em caso de sucesso
-
-    products = [
+    _state.setProducts([
       Product('Product 1', 10.0),
       Product('Product 2', 20.0),
       Product('Product 3', 30.0),
-    ];
-    isLoading = false;
+    ]);
     notifyListeners();
   }
 }
@@ -53,14 +72,15 @@ void main() async {
   ProductViewModel productViewModel = ProductViewModel();
 
   productViewModel.addListener(() {
-    if (productViewModel.isLoading) {
+    final state = productViewModel.state;
+    if (state.isLoading) {
       print('Objects Loading....');
-    } else if (productViewModel.isError) {
-      print('Error: ${productViewModel.errorMessage}');
+    } else if (state.isError) {
+      print('Error: ${state.errorMessage}');
     } else {
-      print('Product length: ${productViewModel.products.length}');
+      print('Product length: ${state.products.length}');
     }
   });
   //testando com isError =  false e true
-  await productViewModel.fetchProducts(isError: true);
+  await productViewModel.fetchProducts(isError: false);
 }
