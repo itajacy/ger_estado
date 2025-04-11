@@ -14,19 +14,27 @@ class ProductViewModel extends ChangeNotifier {
 
   Future<void> fetchProducts({required bool isError}) async {
     // altera para está carregando e notifica os ouvintes
+
+    // Reset state
     isLoading = true;
     errorMessage = null;
+    products = [];
     notifyListeners();
 
     // antes de entrar aqui abaixo que vai demorar para exibir a tela
+    // simulando uma demora de 2 segundos
     await Future.delayed(const Duration(seconds: 2));
 
+    // tratativa  em caso de erro
     if (isError) {
       isLoading = false;
       errorMessage = 'Error fetching products';
       notifyListeners();
       return;
     }
+
+    // tratativa  em caso de sucesso
+
     products = [
       Product('Product 1', 10.0),
       Product('Product 2', 20.0),
